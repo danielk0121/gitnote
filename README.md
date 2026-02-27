@@ -11,5 +11,4 @@
 
 ## 참고 스크린샷 (다른 앱)
 
-![img03.png](docs/assets/img03.png)
-
+![img06.png](docs/assets/img06.png)
