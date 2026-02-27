@@ -69,4 +69,9 @@
 - [x] SettingsActivity에 뒤로가기 버튼이 포함된 툴바 추가 및 일관된 디자인 적용
 - [x] 모든 화면에서 상단 버튼 클릭이 원활하도록 레이아웃 최적화 및 겹침 현상 방지
 
+2026-02-28 12:00, 버그 수정 및 UX 개선: 상태바 가림 현상 해결 및 버튼 크기 확대.
+- [x] MainActivity, AddNoteActivity, ViewNoteActivity, SettingsActivity 모든 레이아웃에 `android:fitsSystemWindows="true"` 적용하여 상태바(Notification Bar)에 의한 가림 현상 해결
+- [x] AddNoteActivity (작성/수정) 화면의 취소(Cancel) 및 저장(Save) 버튼 크기 확대 및 스타일 변경 (`TonalButton` 적용, `minWidth` 설정)
+- [x] 상단 툴바 아이콘 및 버튼 터치 영역 확보
+
 ---
