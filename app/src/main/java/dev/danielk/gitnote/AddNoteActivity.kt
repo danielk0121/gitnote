@@ -18,7 +18,6 @@ import java.util.*
 
 class AddNoteActivity : AppCompatActivity() {
 
-    private lateinit var etTitle: EditText
     private lateinit var etContent: EditText
     private lateinit var btnCancel: Button
     private lateinit var btnSave: Button
@@ -38,7 +37,6 @@ class AddNoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_note)
 
-        etTitle = findViewById(R.id.etTitle)
         etContent = findViewById(R.id.etContent)
         btnCancel = findViewById(R.id.btnCancel)
         btnSave = findViewById(R.id.btnSave)
@@ -49,7 +47,6 @@ class AddNoteActivity : AppCompatActivity() {
         
         if (existingNote != null) {
             val note = existingNote!!
-            etTitle.setText(note.title)
             etContent.setText(readFileContent(note.fileName))
             toolbar.title = "Edit Mode"
         } else {
@@ -119,29 +116,32 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
     private fun saveNote() {
-        val titleFromInput = etTitle.text.toString().trim()
         val fullContent = etContent.text.toString().trim()
 
-        if (fullContent.isEmpty() && titleFromInput.isEmpty()) {
+        if (fullContent.isEmpty()) {
             finish()
             return
         }
 
+        // Front Matter에서 타이틀 추출
+        var title = extractTitle(fullContent)
+        if (title.isBlank()) {
+            title = "제목 없음"
+        }
+
         // Front Matter에서 본문만 추출 (DB 저장용)
         val contentOnly = extractContentOnly(fullContent)
-        // 만약 Front Matter 내부에 title이 있다면 그것을 우선할 수도 있지만, 
-        // 여기서는 상단 제목 입력창(etTitle)을 기준으로 DB의 title을 관리합니다.
 
         val now = System.currentTimeMillis()
         val note = if (existingNote != null) {
             existingNote!!.copy(
-                title = titleFromInput,
+                title = title,
                 content = contentOnly,
                 updatedAt = now
             )
         } else {
             Note(
-                title = titleFromInput,
+                title = title,
                 content = contentOnly,
                 fileName = "${UUID.randomUUID()}.md",
                 createdAt = now,
@@ -159,14 +159,36 @@ class AddNoteActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun extractContentOnly(fullContent: String): String {
-        val parts = fullContent.split("---")
-        return if (parts.size >= 3) {
-            // Front Matter가 있는 경우
-            parts.subList(2, parts.size).joinToString("---").trim()
-        } else {
-            fullContent
+    private fun extractTitle(fullContent: String): String {
+        val firstDashIndex = fullContent.indexOf("---")
+        if (firstDashIndex != 0) return ""
+
+        val secondDashIndex = fullContent.indexOf("---", 3)
+        if (secondDashIndex == -1) return ""
+
+        val frontMatter = fullContent.substring(3, secondDashIndex)
+        val lines = frontMatter.lines()
+        for (line in lines) {
+             if (line.trim().startsWith("title:")) {
+                var titleValue = line.substringAfter("title:").trim()
+                if (titleValue.startsWith("\"") && titleValue.endsWith("\"")) {
+                    titleValue = titleValue.substring(1, titleValue.length - 1)
+                }
+                return titleValue.replace("\\\"", "\"")
+            }
         }
+        return ""
+    }
+
+    private fun extractContentOnly(fullContent: String): String {
+        val firstDashIndex = fullContent.indexOf("---")
+        if (firstDashIndex == 0) {
+            val secondDashIndex = fullContent.indexOf("---", 3)
+            if (secondDashIndex != -1) {
+                return fullContent.substring(secondDashIndex + 3).trim()
+            }
+        }
+        return fullContent
     }
 
     private fun writeFullContentToFile(fileName: String, content: String) {
