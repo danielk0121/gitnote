@@ -158,7 +158,7 @@
 - [x] 샘플 데이터 호환 확인: 기존 `AppDatabase`의 샘플 파일 생성 로직이 이미 Front Matter를 포함하고 있음을 검증
 
 2026-02-28 20:20 +09:00, 목록 화면 앱 이름 미표시 버그 수정 완료.
-- [x] 버그 원인 파악: `Toolbar` 내부에서 `LinearLayout`의 `layout_weight`가 동작하지 않아 앱 이름 영역의 너비가 0이 되는 현상 확인
-- [x] 레이아웃 구조 개선: `Toolbar` 내부 뷰들을 `ConstraintLayout`으로 감싸서 `match_parent` 크기를 확보하고 자식 뷰들의 위치를 제약 조건으로 명확히 정의
+- [x] 버그 원인 파악: `Toolbar` 내부에서 `LinearLayout`의 `layout_weight`가 동작하지 않는 문제와 더불어, 다중 선택 모드 시 표시되는 레이아웃(`btnCloseSelection` 등)이 앱 타이틀 레이아웃을 가리는 현상 확인
+- [x] 레이아웃 구조 개선: `Toolbar` 내부 뷰들을 `ConstraintLayout`으로 감싸서 `match_parent` 크기를 확보하고 자식 뷰들의 위치를 제약 조건으로 명확히 정의하여 겹침 및 가림 현상 방지
 - [x] 검증: `btnCloseSelection` 가시성 상태에 따른 레이아웃 배치 정상 동작 확인 예상
 
