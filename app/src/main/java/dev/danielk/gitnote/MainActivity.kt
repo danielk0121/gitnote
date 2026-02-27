@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var syncLayout: LinearLayout
+    private lateinit var searchView: androidx.appcompat.widget.SearchView
     private lateinit var db: AppDatabase
     private lateinit var noteAdapter: NoteAdapter
     private val notes = mutableListOf<Note>()
@@ -46,9 +47,26 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         fabAdd = findViewById(R.id.fabAdd)
         syncLayout = findViewById(R.id.syncLayout)
+        searchView = findViewById(R.id.searchView)
 
         setupRecyclerView()
+        setupSearchView()
         loadNotes()
+    }
+
+    private fun setupSearchView() {
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    searchNotes(newText)
+                }
+                return true
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -91,6 +109,21 @@ class MainActivity : AppCompatActivity() {
                 notes.addAll(loadedNotes)
                 noteAdapter.notifyDataSetChanged()
                 syncWithGitHub()
+            }
+        }
+    }
+
+    private fun searchNotes(query: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val filteredNotes = if (query.isEmpty()) {
+                db.noteDao().getAllNotes()
+            } else {
+                db.noteDao().searchNotes(query)
+            }
+            withContext(Dispatchers.Main) {
+                notes.clear()
+                notes.addAll(filteredNotes)
+                noteAdapter.notifyDataSetChanged()
             }
         }
     }

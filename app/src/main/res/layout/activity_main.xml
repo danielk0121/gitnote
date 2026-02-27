@@ -12,6 +12,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="?android:attr/windowBackground"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search notes..." />
+
         <LinearLayout
             android:id="@+id/syncLayout"
             android:layout_width="match_parent"

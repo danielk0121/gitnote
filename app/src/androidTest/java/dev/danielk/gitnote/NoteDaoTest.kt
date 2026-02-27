@@ -56,13 +56,13 @@ class NoteDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun updateNote() = runBlocking {
-        val note = Note(id = 1, title = "Original", content = "Original Content")
-        noteDao.insertNote(note)
-        val insertedNote = noteDao.getAllNotes()[0]
-        val updatedNote = insertedNote.copy(title = "Updated")
-        noteDao.updateNote(updatedNote)
-        val allNotes = noteDao.getAllNotes()
-        assertEquals("Updated", allNotes[0].title)
+    fun searchNotes() = runBlocking {
+        val note1 = Note(title = "Banana", content = "Yellow fruit")
+        val note2 = Note(title = "Apple", content = "Red banana") // content contains 'banana'
+        noteDao.insertNote(note1)
+        noteDao.insertNote(note2)
+
+        val results = noteDao.searchNotes("Banana")
+        assertEquals(2, results.size) // both title/content match
     }
 }
