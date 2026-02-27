@@ -74,4 +74,8 @@
 - [x] AddNoteActivity (작성/수정) 화면의 취소(Cancel) 및 저장(Save) 버튼 크기 확대 및 스타일 변경 (`TonalButton` 적용, `minWidth` 설정)
 - [x] 상단 툴바 아이콘 및 버튼 터치 영역 확보
 
+2026-02-28 12:30, 버그 수정 및 UX 개선: 상단 여백 수정 및 저장 버튼 디자인 최적화.
+- [x] 모든 화면의 `AppBarLayout`에서 중복 적용된 `fitsSystemWindows="true"` 설정을 제거하여 상단에 불필요한 이중 여백이 생기는 버그 수정
+- [x] 수정 화면의 "Save" 버튼을 `TonalButton`에서 `TextButton`으로 변경하고 텍스트를 강조하여 사용자 의도에 맞는 디자인으로 개선
+
 ---
