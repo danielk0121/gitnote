@@ -20,6 +20,9 @@ interface NoteDao {
     @Delete
     suspend fun deleteNote(note: Note)
 
+    @Query("SELECT COUNT(*) FROM notes")
+    suspend fun countNotes(): Int
+
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%' ORDER BY updatedAt DESC")
     suspend fun searchNotes(query: String): List<Note>
 }
