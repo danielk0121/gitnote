@@ -10,5 +10,6 @@ data class Note(
     val id: Int = 0,
     val title: String,
     val content: String,
+    val imageUri: String? = null,
     val timestamp: Long = System.currentTimeMillis()
 ) : Serializable

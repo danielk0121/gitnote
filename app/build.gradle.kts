@@ -46,6 +46,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
 
+    // Image & Markdown
+    implementation(libs.coil)
+    implementation(libs.markwon.core)
+    implementation(libs.markwon.image.coil)
+
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

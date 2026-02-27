@@ -42,4 +42,11 @@
 - [x] "Syncing..." 노출 로직 및 다크 모드 테마 일관성 검증
 - [x] requirements.md 및 todo_test_task.md 업데이트 완료
 
+2026-02-27 19:25, 마크다운 지원 및 이미지 첨부 기능 구현 완료.
+- [x] Markwon 라이브러리 추가 및 어댑터 내 마크다운 렌더링 적용
+- [x] Coil 라이브러리 추가 및 갤러리 이미지 선택/표시 기능 구현
+- [x] Note 모델에 imageUri 필드 추가 및 Room DB 버전 업그레이드 (v2)
+- [x] AddNoteActivity 및 item_note 레이아웃에 이미지 영역 추가
+- [x] 프로젝트 빌드 성공 확인 및 기능 연동 완료
+
 ---
