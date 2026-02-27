@@ -109,6 +109,10 @@
   - [x] 앱 내부 디비에서도 확인 안됨
   - [x] ![sample-data-not-exist.png](../assets/bugs/03/sample-data-not-exist.png)
 
+## 페이즈 14. 수정 화면 기능 수정
+- [ ] 수정 화면에서는 마크다운 헤더 (Front Matter) 정보도 모두 에디터에 표시 한다
+  - 그래야 사용자가 직접 Front Matter 를 수정 할 수 있음
+  - Front Matter 에는 문서 생성,수정 시간 외에도 작성자명 외 기타 다른 정보 작성이 가능함
 
 
 
