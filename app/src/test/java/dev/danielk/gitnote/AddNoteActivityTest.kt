@@ -17,7 +17,7 @@ class AddNoteActivityTest {
 
     @Test
     fun testAddNoteActivityLoadsExistingNote() {
-        val note = Note(id = 1, title = "Original Title", content = "Original Content")
+        val note = Note(id = 1, title = "Original Title", content = "Original Content", fileName = "test.md")
         val intent = Intent(ApplicationProvider.getApplicationContext(), AddNoteActivity::class.java).apply {
             putExtra("note", note)
         }

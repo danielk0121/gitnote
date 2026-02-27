@@ -37,7 +37,7 @@ class NoteDaoTest {
     @Test
     @Throws(Exception::class)
     fun writeNoteAndReadInList() = runBlocking {
-        val note = Note(title = "Test Note", content = "Test Content")
+        val note = Note(title = "Test Note", content = "Test Content", fileName = "test.md")
         noteDao.insertNote(note)
         val allNotes = noteDao.getAllNotes()
         assertEquals(allNotes[0].title, note.title)
@@ -46,7 +46,7 @@ class NoteDaoTest {
     @Test
     @Throws(Exception::class)
     fun deleteNote() = runBlocking {
-        val note = Note(id = 1, title = "Delete Me", content = "Content")
+        val note = Note(id = 1, title = "Delete Me", content = "Content", fileName = "delete.md")
         noteDao.insertNote(note)
         val insertedNote = noteDao.getAllNotes()[0]
         noteDao.deleteNote(insertedNote)
@@ -57,8 +57,8 @@ class NoteDaoTest {
     @Test
     @Throws(Exception::class)
     fun searchNotes() = runBlocking {
-        val note1 = Note(title = "Banana", content = "Yellow fruit")
-        val note2 = Note(title = "Apple", content = "Red banana") // content contains 'banana'
+        val note1 = Note(title = "Banana", content = "Yellow fruit", fileName = "banana.md")
+        val note2 = Note(title = "Apple", content = "Red banana", fileName = "apple.md") // content contains 'banana'
         noteDao.insertNote(note1)
         noteDao.insertNote(note2)
 
@@ -70,9 +70,9 @@ class NoteDaoTest {
     @Throws(Exception::class)
     fun insertAllNotes() = runBlocking {
         val notes = listOf(
-            Note(title = "Note 1", content = "Content 1"),
-            Note(title = "Note 2", content = "Content 2"),
-            Note(title = "Note 3", content = "Content 3")
+            Note(title = "Note 1", content = "Content 1", fileName = "note1.md"),
+            Note(title = "Note 2", content = "Content 2", fileName = "note2.md"),
+            Note(title = "Note 3", content = "Content 3", fileName = "note3.md")
         )
         noteDao.insertAll(notes)
         val allNotes = noteDao.getAllNotes()
