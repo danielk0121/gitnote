@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import dev.danielk.gitnote.model.Note
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,12 +46,26 @@ class AddNoteActivity : AppCompatActivity() {
 
         existingNote = intent.getSerializableExtra("note") as? Note
         val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
-        existingNote?.let {
-            etTitle.setText(it.title)
-            etContent.setText(it.content)
+        
+        if (existingNote != null) {
+            val note = existingNote!!
+            etTitle.setText(note.title)
+            etContent.setText(readFileContent(note.fileName))
             toolbar.title = "Edit Mode"
-        } ?: run {
+        } else {
             toolbar.title = "New Note"
+            // 신규 작성 시 기본 Front Matter 템플릿 제공
+            val now = System.currentTimeMillis()
+            val template = """
+                ---
+                title: ""
+                author: ""
+                created_at: ${dateFormat.format(Date(now))}
+                updated_at: ${dateFormat.format(Date(now))}
+                ---
+                
+            """.trimIndent()
+            etContent.setText(template)
         }
 
         btnCancel.setOnClickListener {
@@ -63,6 +78,20 @@ class AddNoteActivity : AppCompatActivity() {
 
         btnAddImage.setOnClickListener {
             pickImageLauncher.launch("image/*")
+        }
+    }
+
+    private fun readFileContent(fileName: String): String {
+        val file = File(filesDir, fileName)
+        if (!file.exists()) return ""
+        return try {
+            val inputStream = FileInputStream(file)
+            val content = inputStream.bufferedReader().use { it.readText() }
+            inputStream.close()
+            content
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
         }
     }
 
@@ -90,32 +119,38 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
     private fun saveNote() {
-        val title = etTitle.text.toString().trim()
-        val content = etContent.text.toString().trim()
+        val titleFromInput = etTitle.text.toString().trim()
+        val fullContent = etContent.text.toString().trim()
 
-        if (content.isEmpty() && title.isEmpty()) {
+        if (fullContent.isEmpty() && titleFromInput.isEmpty()) {
             finish()
             return
         }
 
+        // Front Matter에서 본문만 추출 (DB 저장용)
+        val contentOnly = extractContentOnly(fullContent)
+        // 만약 Front Matter 내부에 title이 있다면 그것을 우선할 수도 있지만, 
+        // 여기서는 상단 제목 입력창(etTitle)을 기준으로 DB의 title을 관리합니다.
+
         val now = System.currentTimeMillis()
         val note = if (existingNote != null) {
             existingNote!!.copy(
-                title = title,
-                content = content,
+                title = titleFromInput,
+                content = contentOnly,
                 updatedAt = now
             )
         } else {
             Note(
-                title = title,
-                content = content,
+                title = titleFromInput,
+                content = contentOnly,
                 fileName = "${UUID.randomUUID()}.md",
                 createdAt = now,
                 updatedAt = now
             )
         }
 
-        writeNoteToFile(note)
+        // 파일에는 에디터의 전체 내용(수정된 Front Matter 포함)을 그대로 저장합니다.
+        writeFullContentToFile(note.fileName, fullContent)
         
         val intent = Intent().apply {
             putExtra("note", note)
@@ -124,20 +159,21 @@ class AddNoteActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun writeNoteToFile(note: Note) {
-        val header = """
-            ---
-            title: "${note.title.replace("\"", "\\\"")}"
-            created_at: ${dateFormat.format(Date(note.createdAt))}
-            updated_at: ${dateFormat.format(Date(note.updatedAt))}
-            ---
-            
-        """.trimIndent()
-        
+    private fun extractContentOnly(fullContent: String): String {
+        val parts = fullContent.split("---")
+        return if (parts.size >= 3) {
+            // Front Matter가 있는 경우
+            parts.subList(2, parts.size).joinToString("---").trim()
+        } else {
+            fullContent
+        }
+    }
+
+    private fun writeFullContentToFile(fileName: String, content: String) {
         try {
-            val file = File(filesDir, note.fileName)
+            val file = File(filesDir, fileName)
             val outputStream = FileOutputStream(file)
-            outputStream.write((header + note.content).toByteArray())
+            outputStream.write(content.toByteArray())
             outputStream.close()
         } catch (e: Exception) {
             e.printStackTrace()
