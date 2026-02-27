@@ -95,3 +95,7 @@
 - [x] PROMPT.md 지침에 따라 커밋 작성자를 'Gemini CLI <gemini-cli@example.com>'으로 수정 (--amend)
 - [x] 작업 완료 알림 스크립트 실행 및 추가 질문 금지 지침 확인
 
+2026-02-28 16:20 +09:00, 문서 자산 최적화: 이미지 해상도 축소.
+- [x] docs/assets/img01.png, img02.png 해상도 50% 축소 (sips 사용)
+- [x] 최적화된 이미지 커밋 및 알림 스크립트 실행
+
