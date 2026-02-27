@@ -10,5 +10,7 @@ data class Note(
     val id: Int = 0,
     val title: String,
     val content: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val fileName: String,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis()
 ) : Serializable

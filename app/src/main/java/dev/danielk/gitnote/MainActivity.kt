@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
+import java.io.File
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -107,8 +108,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun sortAndDisplayNotes() {
         val sortedList = when (currentSortOrder) {
-            "date_desc" -> notes.sortedByDescending { it.timestamp }
-            "date_asc" -> notes.sortedBy { it.timestamp }
+            "date_desc" -> notes.sortedByDescending { it.updatedAt }
+            "date_asc" -> notes.sortedBy { it.updatedAt }
             "title_asc" -> notes.sortedBy { if (it.title.isEmpty()) "제목 없음" else it.title }
             "title_desc" -> notes.sortedByDescending { if (it.title.isEmpty()) "제목 없음" else it.title }
             else -> notes
@@ -209,6 +210,10 @@ class MainActivity : AppCompatActivity() {
     private fun deleteNote(note: Note) {
         lifecycleScope.launch(Dispatchers.IO) {
             db.noteDao().deleteNote(note)
+            val file = File(filesDir, note.fileName)
+            if (file.exists()) {
+                file.delete()
+            }
             loadNotes()
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@MainActivity, "Note deleted", Toast.LENGTH_SHORT).show()

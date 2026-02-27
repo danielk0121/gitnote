@@ -34,7 +34,7 @@ class NoteAdapter(
         val note = notes[position]
         holder.tvTitle.text = if (note.title.isEmpty()) "제목 없음" else note.title
         holder.tvContent.text = note.content
-        holder.tvDate.text = dateFormat.format(Date(note.timestamp))
+        holder.tvDate.text = dateFormat.format(Date(note.updatedAt))
 
         holder.itemView.setOnClickListener {
             onNoteClick(note)

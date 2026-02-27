@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import dev.danielk.gitnote.model.Note
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AddNoteActivity : AppCompatActivity() {
 
@@ -21,6 +23,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var btnSave: Button
     private lateinit var btnAddImage: ImageButton
     private var existingNote: Note? = null
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -91,20 +94,49 @@ class AddNoteActivity : AppCompatActivity() {
             return
         }
 
-        val note = existingNote?.copy(
-            title = title,
-            content = content,
-            timestamp = System.currentTimeMillis()
-        ) ?: Note(
-            title = title,
-            content = content,
-            timestamp = System.currentTimeMillis()
-        )
+        val now = System.currentTimeMillis()
+        val note = if (existingNote != null) {
+            existingNote!!.copy(
+                title = title,
+                content = content,
+                updatedAt = now
+            )
+        } else {
+            Note(
+                title = title,
+                content = content,
+                fileName = "${UUID.randomUUID()}.md",
+                createdAt = now,
+                updatedAt = now
+            )
+        }
+
+        writeNoteToFile(note)
         
         val intent = Intent().apply {
             putExtra("note", note)
         }
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    private fun writeNoteToFile(note: Note) {
+        val header = """
+            ---
+            title: "${note.title.replace("\"", "\\\"")}"
+            created_at: ${dateFormat.format(Date(note.createdAt))}
+            updated_at: ${dateFormat.format(Date(note.updatedAt))}
+            ---
+            
+        """.trimIndent()
+        
+        try {
+            val file = File(filesDir, note.fileName)
+            val outputStream = FileOutputStream(file)
+            outputStream.write((header + note.content).toByteArray())
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
