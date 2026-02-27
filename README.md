@@ -6,5 +6,5 @@
 
 ## 참고 스크린샷 (다른 앱)
 
-![img01.png](assets/img01.png)
+![img03.png](assets/img03.png)
 
