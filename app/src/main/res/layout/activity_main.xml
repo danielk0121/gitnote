@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="8dp"
-            android:background="#f0f0f0"
+            android:background="@color/sync_background"
             android:gravity="center"
             android:visibility="gone">
 

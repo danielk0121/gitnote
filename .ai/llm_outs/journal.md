@@ -26,8 +26,20 @@
 - [x] 다크 모드 대응 및 테마 최적화
 - [x] 더미 GitHub 동기화 UI 및 애니메이션 처리
 
-2026-02-27 17:15, 작업 및 검증 페어링(todo_test_task.md) 도입.
-- [x] todo_test_task.md 파일 생성
-- [ ] 기존 구현 사항들에 대한 세부 검증 작업 시작 예정
+2026-02-27 17:35, Git 초기화 및 1작업 1커밋 원칙 적용.
+- [x] Git 저장소 초기화 및 소급 커밋 완료
+- [x] todo_test_task.md 기반 검증 작업 진행 중
+- [x] NoteDao 단위 테스트 작성 및 KSP 플러그인 이슈 해결
+
+2026-02-27 18:10, 메모 검색 기능 구현 및 검증 완료.
+- [x] SearchView 연동 및 NoteDao 검색 쿼리 구현
+- [x] NoteDaoTest 내 검색 테스트 케이스 추가
+- [x] 빌드 성공 확인 및 개별 커밋 완료
+
+2026-02-27 18:30, 다크 모드 동기화 UI 최적화 및 전체 검증 완료.
+- [x] sync_background 색상 추가 (values, values-night)
+- [x] activity_main.xml 내 syncLayout 배경색 테마 대응
+- [x] "Syncing..." 노출 로직 및 다크 모드 테마 일관성 검증
+- [x] requirements.md 및 todo_test_task.md 업데이트 완료
 
 ---
