@@ -6,8 +6,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -34,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSearch: ImageButton
     private lateinit var btnList: ImageButton
     private lateinit var btnSettings: ImageButton
+    private lateinit var btnDelete: ImageButton
+    private lateinit var btnCloseSelection: ImageButton
+    private lateinit var tvAppName: TextView
     private lateinit var db: AppDatabase
     private lateinit var noteAdapter: NoteAdapter
     private val notes = mutableListOf<Note>()
@@ -60,6 +69,9 @@ class MainActivity : AppCompatActivity() {
         btnSearch = findViewById(R.id.btnSearch)
         btnList = findViewById(R.id.btnList)
         btnSettings = findViewById(R.id.btnSettings)
+        btnDelete = findViewById(R.id.btnDelete)
+        btnCloseSelection = findViewById(R.id.btnCloseSelection)
+        tvAppName = findViewById(R.id.tvAppName)
 
         setupRecyclerView()
         setupSearchView()
@@ -86,6 +98,64 @@ class MainActivity : AppCompatActivity() {
         btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
+        }
+
+        btnDelete.setOnClickListener {
+            showBulkDeleteDialog()
+        }
+
+        btnCloseSelection.setOnClickListener {
+            noteAdapter.setSelectionMode(false)
+        }
+    }
+
+    private fun showBulkDeleteDialog() {
+        val count = noteAdapter.getSelectedItems().size
+        AlertDialog.Builder(this)
+            .setTitle("Delete Notes")
+            .setMessage("Are you sure you want to delete $count selected notes?")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteSelectedNotes()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteSelectedNotes() {
+        val selectedNotes = noteAdapter.getSelectedItems()
+        lifecycleScope.launch(Dispatchers.IO) {
+            for (note in selectedNotes) {
+                db.noteDao().deleteNote(note)
+                val file = File(filesDir, note.fileName)
+                if (file.exists()) {
+                    file.delete()
+                }
+            }
+            withContext(Dispatchers.Main) {
+                noteAdapter.setSelectionMode(false)
+                loadNotes()
+                Toast.makeText(this@MainActivity, "${selectedNotes.size} notes deleted", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateSelectionUI(count: Int) {
+        if (count > 0) {
+            tvAppName.text = "$count selected"
+            btnDelete.visibility = View.VISIBLE
+            btnCloseSelection.visibility = View.VISIBLE
+            btnSearch.visibility = View.GONE
+            btnList.visibility = View.GONE
+            btnSettings.visibility = View.GONE
+            fabAdd.visibility = View.GONE
+        } else {
+            tvAppName.text = "gitnote"
+            btnDelete.visibility = View.GONE
+            btnCloseSelection.visibility = View.GONE
+            btnSearch.visibility = View.VISIBLE
+            btnList.visibility = View.VISIBLE
+            btnSettings.visibility = View.VISIBLE
+            fabAdd.visibility = View.VISIBLE
         }
     }
 
@@ -144,7 +214,10 @@ class MainActivity : AppCompatActivity() {
                 noteResultLauncher.launch(intent)
             },
             onNoteLongClick = { note ->
-                showDeleteDialog(note)
+                showActionDialog(note)
+            },
+            onSelectionChanged = { count ->
+                updateSelectionUI(count)
             }
         )
         recyclerView.adapter = noteAdapter
@@ -152,6 +225,67 @@ class MainActivity : AppCompatActivity() {
         fabAdd.setOnClickListener {
             val intent = Intent(this, AddNoteActivity::class.java)
             noteResultLauncher.launch(intent)
+        }
+    }
+
+    private fun showActionDialog(note: Note) {
+        val options = arrayOf("Copy", "Delete")
+        AlertDialog.Builder(this)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showCopyConfirmDialog(note)
+                    1 -> showDeleteDialog(note)
+                }
+            }
+            .show()
+    }
+
+    private fun showCopyConfirmDialog(note: Note) {
+        AlertDialog.Builder(this)
+            .setTitle("Copy Note")
+            .setMessage("Do you want to copy this note?")
+            .setPositiveButton("Yes") { _, _ ->
+                copyNote(note)
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun copyNote(note: Note) {
+        val now = System.currentTimeMillis()
+        val copiedNote = note.copy(
+            id = 0,
+            title = "copy ${note.title}",
+            fileName = "${UUID.randomUUID()}.md",
+            createdAt = now,
+            updatedAt = now
+        )
+        
+        lifecycleScope.launch(Dispatchers.IO) {
+            db.noteDao().insertNote(copiedNote)
+            // Create the file for the copy
+            val header = """
+                ---
+                title: "${copiedNote.title.replace("\"", "\\\"")}"
+                created_at: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date(copiedNote.createdAt))}
+                updated_at: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date(copiedNote.updatedAt))}
+                ---
+                
+            """.trimIndent()
+            
+            try {
+                val file = File(filesDir, copiedNote.fileName)
+                val outputStream = FileOutputStream(file)
+                outputStream.write((header + copiedNote.content).toByteArray())
+                outputStream.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            
+            loadNotes()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, "Note copied", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
