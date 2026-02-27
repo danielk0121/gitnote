@@ -28,4 +28,4 @@
 - gemini cli 에서 커밋하라는 명령을 받거나, gemini-cli 가 커밋하는 경우 author 를 Gemini CLI <gemini-cli@example.com> 로 기록한다
 - LLM 은 작업이 끝난 후 "ㅇㅇㅇ 을 할까요?" 처럼 추가 질문을 하지 않는다
 - 작업 1개를 완료 한 후 작업 완료를 알리는 알람 스크립트를 실행한다
-  - 스크립트 명령어 : `sh ./gemini_alert.sh "작업내용..."`
+  - 스크립트 명령어 : `sh ~/gemini_alert.sh "작업내용..."`
