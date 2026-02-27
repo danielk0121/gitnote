@@ -62,4 +62,11 @@
 - [x] 신규 메모 작성 시 제목 힌트 수정 및 빈 제목 처리 로직 강화
 - [x] NoteDaoTest에 insertAll 테스트 케이스 추가 및 검증 완료
 
+2026-02-28 11:30, 버그 수정 및 UX 개선: 툴바 타이틀 겹침 이슈 해결.
+- [x] `themes.xml` (Light/Night)에서 `NoActionBar` 테마를 적용하여 시스템 액션바 제거
+- [x] MainActivity 상단 툴바 내부에 "gitnote" 텍스트 뷰 배치하여 버튼과의 겹침 해결
+- [x] AddNoteActivity 및 ViewNoteActivity에서 `app:title`을 제거하여 버튼 가독성 확보
+- [x] SettingsActivity에 뒤로가기 버튼이 포함된 툴바 추가 및 일관된 디자인 적용
+- [x] 모든 화면에서 상단 버튼 클릭이 원활하도록 레이아웃 최적화 및 겹침 현상 방지
+
 ---

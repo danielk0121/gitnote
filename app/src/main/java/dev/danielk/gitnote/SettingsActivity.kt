@@ -25,6 +25,10 @@ class SettingsActivity : AppCompatActivity() {
         radioLight = findViewById(R.id.radioLight)
         radioDark = findViewById(R.id.radioDark)
 
+        findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
+            finish()
+        }
+
         loadSettings()
         setupListeners()
     }

@@ -14,7 +14,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="View Note"
+            app:title=""
             app:navigationIcon="@android:drawable/ic_menu_revert">
 
             <ImageButton
