@@ -44,9 +44,13 @@ class AddNoteActivity : AppCompatActivity() {
         btnAddImage = findViewById(R.id.btnAddImage)
 
         existingNote = intent.getSerializableExtra("note") as? Note
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
         existingNote?.let {
             etTitle.setText(it.title)
             etContent.setText(it.content)
+            toolbar.title = "Edit Mode"
+        } ?: run {
+            toolbar.title = "New Note"
         }
 
         btnCancel.setOnClickListener {

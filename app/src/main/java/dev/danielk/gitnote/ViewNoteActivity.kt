@@ -17,15 +17,20 @@ import io.noties.markwon.image.coil.CoilImagesPlugin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ViewNoteActivity : AppCompatActivity() {
 
     private lateinit var tvTitle: TextView
     private lateinit var tvContent: TextView
+    private lateinit var tvCreatedAt: TextView
+    private lateinit var tvUpdatedAt: TextView
     private lateinit var btnEdit: ImageButton
     private lateinit var markwon: Markwon
     private lateinit var db: AppDatabase
     private var note: Note? = null
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
 
     private val editNoteResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -44,6 +49,8 @@ class ViewNoteActivity : AppCompatActivity() {
         db = AppDatabase.getDatabase(this)
         tvTitle = findViewById(R.id.tvTitle)
         tvContent = findViewById(R.id.tvContent)
+        tvCreatedAt = findViewById(R.id.tvCreatedAt)
+        tvUpdatedAt = findViewById(R.id.tvUpdatedAt)
         btnEdit = findViewById(R.id.btnEdit)
 
         markwon = Markwon.builder(this)
@@ -83,6 +90,8 @@ class ViewNoteActivity : AppCompatActivity() {
     private fun updateUI() {
         note?.let {
             tvTitle.text = if (it.title.isEmpty()) "제목 없음" else it.title
+            tvCreatedAt.text = "Created: ${dateFormat.format(Date(it.createdAt))}"
+            tvUpdatedAt.text = "Updated: ${dateFormat.format(Date(it.updatedAt))}"
             markwon.setMarkdown(tvContent, it.content)
         }
     }
