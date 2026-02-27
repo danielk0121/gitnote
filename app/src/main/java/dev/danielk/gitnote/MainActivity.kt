@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -42,7 +43,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSettings: ImageButton
     private lateinit var btnDelete: ImageButton
     private lateinit var btnCloseSelection: ImageButton
+    private lateinit var btnPull: ImageButton
+    private lateinit var btnPush: ImageButton
+    private lateinit var layoutSyncButtons: LinearLayout
     private lateinit var tvAppName: TextView
+    private lateinit var tvRepoName: TextView
     private lateinit var db: AppDatabase
     private lateinit var noteAdapter: NoteAdapter
     private val notes = mutableListOf<Note>()
@@ -71,12 +76,35 @@ class MainActivity : AppCompatActivity() {
         btnSettings = findViewById(R.id.btnSettings)
         btnDelete = findViewById(R.id.btnDelete)
         btnCloseSelection = findViewById(R.id.btnCloseSelection)
+        btnPull = findViewById(R.id.btnPull)
+        btnPush = findViewById(R.id.btnPush)
+        layoutSyncButtons = findViewById(R.id.layoutSyncButtons)
         tvAppName = findViewById(R.id.tvAppName)
+        tvRepoName = findViewById(R.id.tvRepoName)
 
         setupRecyclerView()
         setupSearchView()
         setupTopBar()
         loadNotes()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateRepoStatus()
+    }
+
+    private fun updateRepoStatus() {
+        val sharedPref = getSharedPreferences("gitnote_prefs", MODE_PRIVATE)
+        val isSyncEnabled = sharedPref.getBoolean("github_sync_enabled", false)
+        if (isSyncEnabled) {
+            val repoName = sharedPref.getString("current_repo_name", "No repository")
+            tvRepoName.text = repoName
+            tvRepoName.visibility = View.VISIBLE
+            layoutSyncButtons.visibility = View.VISIBLE
+        } else {
+            tvRepoName.visibility = View.GONE
+            layoutSyncButtons.visibility = View.GONE
+        }
     }
 
     private fun setupTopBar() {
@@ -106,6 +134,43 @@ class MainActivity : AppCompatActivity() {
 
         btnCloseSelection.setOnClickListener {
             noteAdapter.setSelectionMode(false)
+        }
+
+        btnPull.setOnClickListener {
+            showSyncDialog("Pull")
+        }
+
+        btnPush.setOnClickListener {
+            showSyncDialog("Push")
+        }
+    }
+
+    private fun showSyncDialog(action: String) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_sync_auth, null)
+        val etPat = dialogView.findViewById<EditText>(R.id.etPat)
+
+        AlertDialog.Builder(this)
+            .setTitle("$action from GitHub")
+            .setMessage("Please enter your Personal Access Token (PAT) for security. It will not be stored.")
+            .setView(dialogView)
+            .setPositiveButton(action) { _, _ ->
+                val pat = etPat.text.toString().trim()
+                if (pat.isNotEmpty()) {
+                    simulateSync(action)
+                } else {
+                    Toast.makeText(this, "PAT is required", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun simulateSync(action: String) {
+        lifecycleScope.launch {
+            syncLayout.visibility = View.VISIBLE
+            delay(2000)
+            syncLayout.visibility = View.GONE
+            Toast.makeText(this@MainActivity, "$action complete (Demo)", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -41,6 +41,41 @@
             android:text="Enable GitHub Sync"
             android:textSize="16sp"/>
 
+        <LinearLayout
+            android:id="@+id/layoutRepoSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connected Repositories"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/tvCurrentRepo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="None selected"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="?android:attr/windowBackground"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btnAddRepo"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage Repositories"
+                app:icon="@android:drawable/ic_input_add"/>
+
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
