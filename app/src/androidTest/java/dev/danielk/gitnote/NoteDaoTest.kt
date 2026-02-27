@@ -65,4 +65,17 @@ class NoteDaoTest {
         val results = noteDao.searchNotes("Banana")
         assertEquals(2, results.size) // both title/content match
     }
+
+    @Test
+    @Throws(Exception::class)
+    fun insertAllNotes() = runBlocking {
+        val notes = listOf(
+            Note(title = "Note 1", content = "Content 1"),
+            Note(title = "Note 2", content = "Content 2"),
+            Note(title = "Note 3", content = "Content 3")
+        )
+        noteDao.insertAll(notes)
+        val allNotes = noteDao.getAllNotes()
+        assertEquals(3, allNotes.size)
+    }
 }

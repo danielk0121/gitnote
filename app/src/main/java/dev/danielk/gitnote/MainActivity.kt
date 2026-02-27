@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -27,11 +29,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fabAdd: FloatingActionButton
     private lateinit var syncLayout: LinearLayout
     private lateinit var searchView: androidx.appcompat.widget.SearchView
+    private lateinit var toolbar: Toolbar
+    private lateinit var btnSearch: ImageButton
+    private lateinit var btnList: ImageButton
+    private lateinit var btnSettings: ImageButton
     private lateinit var db: AppDatabase
     private lateinit var noteAdapter: NoteAdapter
     private val notes = mutableListOf<Note>()
+    private var currentSortOrder = "date_desc"
 
-    private val addNoteResultLauncher: ActivityResultLauncher<Intent> =
+    private val noteResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val note = result.data?.getSerializableExtra("note") as? Note
@@ -48,10 +55,67 @@ class MainActivity : AppCompatActivity() {
         fabAdd = findViewById(R.id.fabAdd)
         syncLayout = findViewById(R.id.syncLayout)
         searchView = findViewById(R.id.searchView)
+        toolbar = findViewById(R.id.toolbar)
+        btnSearch = findViewById(R.id.btnSearch)
+        btnList = findViewById(R.id.btnList)
+        btnSettings = findViewById(R.id.btnSettings)
 
         setupRecyclerView()
         setupSearchView()
+        setupTopBar()
         loadNotes()
+    }
+
+    private fun setupTopBar() {
+        btnSearch.setOnClickListener {
+            if (searchView.visibility == View.VISIBLE) {
+                searchView.visibility = View.GONE
+                searchView.setQuery("", false)
+                loadNotes()
+            } else {
+                searchView.visibility = View.VISIBLE
+                searchView.requestFocus()
+            }
+        }
+
+        btnList.setOnClickListener {
+            showSortDialog()
+        }
+
+        btnSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun showSortDialog() {
+        val options = arrayOf("Date (Newest)", "Date (Oldest)", "Title (A-Z)", "Title (Z-A)")
+        AlertDialog.Builder(this)
+            .setTitle("Sort by")
+            .setItems(options) { _, which ->
+                currentSortOrder = when (which) {
+                    0 -> "date_desc"
+                    1 -> "date_asc"
+                    2 -> "title_asc"
+                    3 -> "title_desc"
+                    else -> "date_desc"
+                }
+                sortAndDisplayNotes()
+            }
+            .show()
+    }
+
+    private fun sortAndDisplayNotes() {
+        val sortedList = when (currentSortOrder) {
+            "date_desc" -> notes.sortedByDescending { it.timestamp }
+            "date_asc" -> notes.sortedBy { it.timestamp }
+            "title_asc" -> notes.sortedBy { if (it.title.isEmpty()) "제목 없음" else it.title }
+            "title_desc" -> notes.sortedByDescending { if (it.title.isEmpty()) "제목 없음" else it.title }
+            else -> notes
+        }
+        notes.clear()
+        notes.addAll(sortedList)
+        noteAdapter.notifyDataSetChanged()
     }
 
     private fun setupSearchView() {
@@ -73,10 +137,10 @@ class MainActivity : AppCompatActivity() {
         noteAdapter = NoteAdapter(
             notes,
             onNoteClick = { note ->
-                val intent = Intent(this, AddNoteActivity::class.java).apply {
+                val intent = Intent(this, ViewNoteActivity::class.java).apply {
                     putExtra("note", note)
                 }
-                addNoteResultLauncher.launch(intent)
+                noteResultLauncher.launch(intent)
             },
             onNoteLongClick = { note ->
                 showDeleteDialog(note)
@@ -86,7 +150,7 @@ class MainActivity : AppCompatActivity() {
 
         fabAdd.setOnClickListener {
             val intent = Intent(this, AddNoteActivity::class.java)
-            addNoteResultLauncher.launch(intent)
+            noteResultLauncher.launch(intent)
         }
     }
 
@@ -107,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 notes.clear()
                 notes.addAll(loadedNotes)
-                noteAdapter.notifyDataSetChanged()
+                sortAndDisplayNotes()
                 syncWithGitHub()
             }
         }
@@ -123,7 +187,7 @@ class MainActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 notes.clear()
                 notes.addAll(filteredNotes)
-                noteAdapter.notifyDataSetChanged()
+                sortAndDisplayNotes()
             }
         }
     }
@@ -153,6 +217,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun syncWithGitHub() {
+        val sharedPref = getSharedPreferences("gitnote_prefs", MODE_PRIVATE)
+        if (!sharedPref.getBoolean("github_sync_enabled", false)) {
+            return
+        }
+
         lifecycleScope.launch {
             syncLayout.visibility = View.VISIBLE
             delay(2000) // Simulate network delay

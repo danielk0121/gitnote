@@ -37,8 +37,18 @@
             android:layout_marginTop="4dp"
             android:textSize="14sp"
             android:text="Note Content..."
-            android:maxLines="2"
+            android:maxLines="3"
             android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:text="Date/Time"
+            android:textColor="?android:attr/textColorSecondary"
+            android:gravity="end" />
 
     </LinearLayout>
 

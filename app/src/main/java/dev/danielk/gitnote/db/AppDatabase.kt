@@ -33,9 +33,21 @@ abstract class AppDatabase : RoomDatabase() {
                         INSTANCE?.let { database ->
                             CoroutineScope(Dispatchers.IO).launch {
                                 val noteDao = database.noteDao()
-                                for (i in 1..10) {
-                                    noteDao.insert(Note(title = "Note $i", content = "Content $i"))
-                                }
+                                val sampleNotes = listOf(
+                                    Note(title = "Welcome to GitNote", content = "Welcome to GitNote! This is a simple note-taking app that supports Markdown and GitHub synchronization."),
+                                    Note(title = "Markdown Support", content = "# Headers\n## Sub-header\n### H3\n\n**Bold text** and *italic text*.\n\n- List item 1\n- List item 2"),
+                                    Note(title = "Task List", content = "- [ ] Finish the project\n- [x] Create database\n- [ ] Add sync feature"),
+                                    Note(title = "Meeting Notes", content = "## Weekly Sync\n\n- Discussed new features\n- Review PRs\n- Plan for next sprint"),
+                                    Note(title = "Grocery List", content = "- Milk\n- Eggs\n- Bread\n- Coffee"),
+                                    Note(title = "Code Snippet", content = "```kotlin\nfun main() {\n    println(\"Hello, World!\")\n}\n```"),
+                                    Note(title = "Project Ideas", content = "1. AI integration\n2. Voice notes\n3. Cloud backup"),
+                                    Note(title = "Book Recommendations", content = "- Clean Code\n- The Pragmatic Programmer\n- Introduction to Algorithms"),
+                                    Note(title = "Travel Plans", content = "### Japan Trip\n- Tokyo\n- Kyoto\n- Osaka"),
+                                    Note(title = "Daily Journal", content = "Today was a productive day. I implemented the database and added sample data."),
+                                    Note(title = "Recipes", content = "## Pancakes\n\n1. Mix flour, milk, eggs\n2. Cook on pan\n3. Serve with syrup"),
+                                    Note(title = "Contact Info", content = "Email: developer@example.com\nWebsite: https://example.com")
+                                )
+                                noteDao.insertAll(sampleNotes)
                             }
                         }
                     }

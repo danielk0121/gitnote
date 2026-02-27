@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -18,7 +19,8 @@ class AddNoteActivity : AppCompatActivity() {
 
     private lateinit var etTitle: EditText
     private lateinit var etContent: EditText
-    private lateinit var fabSave: FloatingActionButton
+    private lateinit var btnCancel: Button
+    private lateinit var btnSave: Button
     private lateinit var btnAddImage: ImageButton
     private lateinit var ivNoteImage: ImageView
     private var existingNote: Note? = null
@@ -26,8 +28,11 @@ class AddNoteActivity : AppCompatActivity() {
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            // Take persistable URI permission
-            contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            try {
+                contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } catch (e: SecurityException) {
+                // Ignore if we can't take permission, though it might break later
+            }
             selectedImageUri = it.toString()
             ivNoteImage.visibility = View.VISIBLE
             ivNoteImage.load(it)
@@ -40,7 +45,8 @@ class AddNoteActivity : AppCompatActivity() {
 
         etTitle = findViewById(R.id.etTitle)
         etContent = findViewById(R.id.etContent)
-        fabSave = findViewById(R.id.fabSave)
+        btnCancel = findViewById(R.id.btnCancel)
+        btnSave = findViewById(R.id.btnSave)
         btnAddImage = findViewById(R.id.btnAddImage)
         ivNoteImage = findViewById(R.id.ivNoteImage)
 
@@ -55,16 +61,16 @@ class AddNoteActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
+        btnCancel.setOnClickListener {
             finish()
+        }
+
+        btnSave.setOnClickListener {
+            saveNote()
         }
 
         btnAddImage.setOnClickListener {
             pickImageLauncher.launch("image/*")
-        }
-
-        fabSave.setOnClickListener {
-            saveNote()
         }
     }
 
@@ -72,14 +78,28 @@ class AddNoteActivity : AppCompatActivity() {
         val title = etTitle.text.toString().trim()
         val content = etContent.text.toString().trim()
 
-        if (title.isEmpty()) {
-            etTitle.error = "Title is required"
+        if (content.isEmpty() && title.isEmpty()) {
+            finish() // Nothing to save
             return
         }
 
-        val note = existingNote?.copy(title = title, content = content, imageUri = selectedImageUri)
-            ?: Note(title = title, content = content, imageUri = selectedImageUri)
+        // We allow empty title, it will show as "제목 없음" in the list
+        val note = existingNote?.copy(
+            title = title,
+            content = content,
+            imageUri = selectedImageUri,
+            timestamp = System.currentTimeMillis()
+        ) ?: Note(
+            title = title,
+            content = content,
+            imageUri = selectedImageUri,
+            timestamp = System.currentTimeMillis()
+        )
 
+        // Save to DB directly if it's an update, or pass back to MainActivity/ViewNoteActivity
+        // Actually, to be consistent with MainActivity's current logic, we pass it back.
+        // But MainActivity also needs to save it.
+        
         val intent = Intent().apply {
             putExtra("note", note)
         }

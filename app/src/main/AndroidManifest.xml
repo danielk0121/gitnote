@@ -27,6 +27,16 @@
                 android:exported="false"
                 android:label="Edit Note" />
 
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="Settings" />
+
+        <activity
+            android:name=".ViewNoteActivity"
+            android:exported="false"
+            android:label="View Note" />
+
     </application>
 
 </manifest>
