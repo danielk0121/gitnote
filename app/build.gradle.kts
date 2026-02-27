@@ -13,7 +13,7 @@ android {
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,14 +27,18 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+//            all {
+//                // 병렬 실행 스레드 수를 제한 (CPU 코어 절반 정도나 1로 설정)
+//                maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+//            }
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
