@@ -23,111 +23,129 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:title=""
-                app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge">
+                app:contentInsetStart="0dp"
+                app:contentInsetEnd="0dp">
 
-                <ImageButton
-                    android:id="@+id/btnCloseSelection"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Cancel Selection"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    android:visibility="gone"
-                    android:layout_gravity="start" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:id="@+id/tvAppName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="gitnote"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvRepoName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="No repository"
-                        android:textSize="12sp"
-                        android:textColor="?android:attr/textColorSecondary"
+                    <ImageButton
+                        android:id="@+id/btnCloseSelection"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Cancel Selection"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
                         android:visibility="gone"
-                        android:ellipsize="end"
-                        android:maxLines="1" />
-                </LinearLayout>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
 
-                <LinearLayout
-                    android:id="@+id/layoutSyncButtons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:visibility="gone">
+                    <LinearLayout
+                        android:id="@+id/layoutTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintStart_toEndOf="@id/btnCloseSelection"
+                        app:layout_constraintEnd_toStartOf="@id/layoutSyncButtons"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
 
-                    <ImageButton
-                        android:id="@+id/btnPull"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Pull"
-                        android:src="@android:drawable/ic_menu_revert" />
+                        <TextView
+                            android:id="@+id/tvAppName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="gitnote"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
-                    <ImageButton
-                        android:id="@+id/btnPush"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Push"
-                        android:src="@android:drawable/ic_menu_send" />
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvRepoName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No repository"
+                            android:textSize="12sp"
+                            android:textColor="?android:attr/textColorSecondary"
+                            android:visibility="gone"
+                            android:ellipsize="end"
+                            android:maxLines="1" />
+                    </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    <LinearLayout
+                        android:id="@+id/layoutSyncButtons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toStartOf="@id/layoutActions"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
 
-                    <ImageButton
-                        android:id="@+id/btnDelete"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Delete Selected"
-                        android:src="@android:drawable/ic_menu_delete"
-                        android:visibility="gone" />
+                        <ImageButton
+                            android:id="@+id/btnPull"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Pull"
+                            android:src="@android:drawable/ic_menu_revert" />
 
-                    <ImageButton
-                        android:id="@+id/btnSearch"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Search"
-                        android:src="@android:drawable/ic_menu_search" />
+                        <ImageButton
+                            android:id="@+id/btnPush"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Push"
+                            android:src="@android:drawable/ic_menu_send" />
+                    </LinearLayout>
 
-                    <ImageButton
-                        android:id="@+id/btnList"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="List View"
-                        android:src="@android:drawable/ic_menu_sort_by_size" />
+                    <LinearLayout
+                        android:id="@+id/layoutActions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
 
-                    <ImageButton
-                        android:id="@+id/btnSettings"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Settings"
-                        android:src="@android:drawable/ic_menu_preferences" />
-                </LinearLayout>
+                        <ImageButton
+                            android:id="@+id/btnDelete"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Delete Selected"
+                            android:src="@android:drawable/ic_menu_delete"
+                            android:visibility="gone" />
+
+                        <ImageButton
+                            android:id="@+id/btnSearch"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Search"
+                            android:src="@android:drawable/ic_menu_search" />
+
+                        <ImageButton
+                            android:id="@+id/btnList"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="List View"
+                            android:src="@android:drawable/ic_menu_sort_by_size" />
+
+                        <ImageButton
+                            android:id="@+id/btnSettings"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Settings"
+                            android:src="@android:drawable/ic_menu_preferences" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.appcompat.widget.Toolbar>
 
