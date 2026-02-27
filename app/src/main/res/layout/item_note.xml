@@ -14,14 +14,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/ivItemImage"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            android:layout_marginBottom="8dp" />
-
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"

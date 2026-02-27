@@ -43,14 +43,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/ivNoteImage"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:visibility="gone"
-                android:layout_marginBottom="16dp" />
-
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
