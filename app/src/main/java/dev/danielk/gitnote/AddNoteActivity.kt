@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.MultiAutoCompleteTextView
+import android.widget.Scroller
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -98,6 +99,8 @@ class AddNoteActivity : AppCompatActivity() {
             isVerticalScrollBarEnabled = true
             setHorizontallyScrolling(false)
         }
+        // 아래 코드가 핵심입니다: 시스템이 커서를 강제로 따라가는 기능을 억제합니다.
+        etContent.setScroller(Scroller(this))
 
         btnCancel.setOnClickListener {
             finish()
