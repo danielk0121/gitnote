@@ -63,7 +63,7 @@ class AddNoteActivity : AppCompatActivity() {
 
         // 스크롤 시 커서가 화면 밖으로 나가도 강제로 스크롤을 멈추지 않도록 설정
         etContent.movementMethod = android.text.method.ScrollingMovementMethod()
-        
+
         // 키보드가 올라올 때 레이아웃이 깨지면서 커서가 튀는 것을 방지
         window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
@@ -84,6 +84,19 @@ class AddNoteActivity : AppCompatActivity() {
             currentFrontMatterMap["created_at"] = dateFormat.format(Date(now))
             currentFrontMatterMap["updated_at"] = dateFormat.format(Date(now))
             etContent.setText("")
+        }
+
+        //사용자가 느끼는 "버벅임"과 "커서 튐"을 해결하기 위해 AddNoteActivity.kt에 다음 설정을 시도해 보세요.
+        // 이것이 EditText를 쓰면서도 전문 편집기 흉내를 내는 최선의 방법입니다.
+        etContent.apply {
+            // 1. 시스템의 자동 커서 보정 및 문법 검사를 강제로 끔
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                    android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE or
+                    android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
+            // 2. 스크롤 시 커서 가시성 유지 로직 비활성화 시도
+            isVerticalScrollBarEnabled = true
+            setHorizontallyScrolling(false)
         }
 
         btnCancel.setOnClickListener {
