@@ -126,16 +126,16 @@
   - [ ] apk 파일에 날짜시분초 표기해서 파일명이 버저닝 기능을 하도록 함
 
 ## 페이즈 16. 버그 수정 및 신규 기능 추가
-- [ ] 편집모드 스크롤 버벅임 수정
-  - [ ] `activity_add_note.xml`의 `etContent` 입력 타입 및 스크롤 설정 변경
-  - [ ] `AddNoteActivity.kt`에서 `movementMethod` 및 `SOFT_INPUT_ADJUST_RESIZE` 설정 추가
-- [ ] 메모 쓰기 단순화 (첫 줄이 제목)
-  - [ ] 메모 저장 시 첫 줄을 제목으로 자동 추출하도록 로직 변경
-  - [ ] 메타정보 자동 입력 기능 강화 및 별도 수정 기능 검토
-- [ ] 태그 기능 구현
-  - [ ] 메모에 태그 필드 추가 (DB 및 Model)
-  - [ ] 태그 입력 및 표시 UI 구현
-- [ ] 태그 자동 완성 기능 구현
+- [x] 편집모드 스크롤 버벅임 수정
+  - [x] `activity_add_note.xml`의 `etContent` 입력 타입 및 스크롤 설정 변경
+  - [x] `AddNoteActivity.kt`에서 `movementMethod` 및 `SOFT_INPUT_ADJUST_RESIZE` 설정 추가
+- [x] 메모 쓰기 단순화 (첫 줄이 제목)
+  - [x] 메모 저장 시 첫 줄을 제목으로 자동 추출하도록 로직 변경
+  - [x] 메타정보 자동 입력 기능 강화 및 별도 수정 기능 검토
+- [x] 태그 기능 구현
+  - [x] 메모에 태그 필드 추가 (DB 및 Model)
+  - [x] 태그 입력 및 표시 UI 구현
+- [x] 태그 자동 완성 기능 구현
 
 
 

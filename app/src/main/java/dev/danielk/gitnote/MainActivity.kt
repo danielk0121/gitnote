@@ -322,6 +322,7 @@ class MainActivity : AppCompatActivity() {
             id = 0,
             title = "copy ${note.title}",
             fileName = "${UUID.randomUUID()}.md",
+            tags = note.tags,
             createdAt = now,
             updatedAt = now
         )
@@ -332,6 +333,7 @@ class MainActivity : AppCompatActivity() {
             val header = """
                 ---
                 title: "${copiedNote.title.replace("\"", "\\\"")}"
+                tags: "${copiedNote.tags.replace("\"", "\\\"")}"
                 created_at: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date(copiedNote.createdAt))}
                 updated_at: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date(copiedNote.updatedAt))}
                 ---

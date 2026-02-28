@@ -34,6 +34,14 @@
                     android:src="@android:drawable/ic_menu_gallery"
                     android:contentDescription="Add Image" />
 
+                <ImageButton
+                    android:id="@+id/btnMeta"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/ic_menu_info_details"
+                    android:contentDescription="Metadata" />
+
                 <Button
                     android:id="@+id/btnCancel"
                     style="@style/Widget.Material3.Button.TextButton"
@@ -60,6 +68,19 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <MultiAutoCompleteTextView
+        android:id="@+id/etTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:hint="Tags (comma separated)"
+        android:textSize="14sp"
+        android:background="@null"
+        android:completionThreshold="1"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
+
     <EditText
         android:id="@+id/etContent"
         android:layout_width="match_parent"
@@ -68,7 +89,12 @@
         android:hint="Write your note here..."
         android:gravity="top"
         android:background="@null"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        android:inputType="textMultiLine|textNoSuggestions|textVisiblePassword"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false"
+        android:scrollbarStyle="insideOverlay"
+        android:overScrollMode="always"
+        app:layout_constraintTop_toBottomOf="@id/etTags"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

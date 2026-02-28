@@ -11,6 +11,7 @@ data class Note(
     val title: String,
     val content: String,
     val fileName: String,
+    val tags: String = "", // Comma separated tags
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 ) : Serializable

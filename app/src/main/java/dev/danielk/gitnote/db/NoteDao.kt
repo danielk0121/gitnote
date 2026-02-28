@@ -25,4 +25,7 @@ interface NoteDao {
 
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%' ORDER BY updatedAt DESC")
     suspend fun searchNotes(query: String): List<Note>
+
+    @Query("SELECT tags FROM notes")
+    suspend fun getAllTagsList(): List<String>
 }

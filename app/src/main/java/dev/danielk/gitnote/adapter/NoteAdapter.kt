@@ -25,6 +25,7 @@ class NoteAdapter(
     class NoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvTitle: TextView = view.findViewById(R.id.tvTitle)
         val tvContent: TextView = view.findViewById(R.id.tvContent)
+        val tvTags: TextView = view.findViewById(R.id.tvTags)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val cbSelect: CheckBox = view.findViewById(R.id.cbSelect)
     }
@@ -55,6 +56,13 @@ class NoteAdapter(
         holder.tvTitle.text = if (note.title.isEmpty()) "제목 없음" else note.title
         holder.tvContent.text = note.content
         holder.tvDate.text = dateFormat.format(Date(note.updatedAt))
+
+        if (note.tags.isNotEmpty()) {
+            holder.tvTags.visibility = View.VISIBLE
+            holder.tvTags.text = note.tags.split(",").joinToString(" #", prefix = "#") { it.trim() }
+        } else {
+            holder.tvTags.visibility = View.GONE
+        }
 
         holder.cbSelect.visibility = if (isSelectionMode) View.VISIBLE else View.GONE
         holder.cbSelect.isChecked = selectedItems.contains(note)
