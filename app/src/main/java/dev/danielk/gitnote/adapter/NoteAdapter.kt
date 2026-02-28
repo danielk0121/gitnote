@@ -54,7 +54,9 @@ class NoteAdapter(
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
         holder.tvTitle.text = if (note.title.isEmpty()) "제목 없음" else note.title
-        holder.tvContent.text = note.content
+        val contentLines = note.content.lines()
+        val previewContent = contentLines.drop(1).filter { it.isNotBlank() }.take(3).joinToString("\n")
+        holder.tvContent.text = previewContent
         holder.tvDate.text = dateFormat.format(Date(note.updatedAt))
 
         if (note.tags.isNotEmpty()) {
